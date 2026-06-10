@@ -1,0 +1,47 @@
+<section class="page-heading">
+  <div>
+    <p>Live desk</p>
+    <h1>Trading Dashboard</h1>
+  </div>
+  <button type="button">Refresh Signals</button>
+</section>
+
+<section class="metrics-grid">
+  <article>
+    <span>Active Signals</span>
+    <strong>3</strong>
+  </article>
+  <article>
+    <span>Avg Confidence</span>
+    <strong>62%</strong>
+  </article>
+  <article>
+    <span>Kafka Topic</span>
+    <strong>trading.signals</strong>
+  </article>
+</section>
+
+<section class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Market</th>
+        <th>Recommendation</th>
+        <th>Confidence</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (signal of signals; track signal.symbol) {
+        <tr>
+          <td>{{ signal.symbol }}</td>
+          <td>{{ signal.market }}</td>
+          <td>{{ signal.recommendation }}</td>
+          <td>{{ signal.confidence }}%</td>
+          <td><span class="status">{{ signal.status }}</span></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>

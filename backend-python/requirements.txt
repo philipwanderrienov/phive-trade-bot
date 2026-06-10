@@ -1,0 +1,6 @@
+apscheduler
+kafka-python
+openai
+pandas
+python-dotenv
+yfinance

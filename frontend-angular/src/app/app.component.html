@@ -1,0 +1,21 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">P</span>
+      <div>
+        <strong>Phive Trade</strong>
+        <span>Signal Operations</span>
+      </div>
+    </div>
+
+    <nav aria-label="Main navigation">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+      <a routerLink="/backtesting" routerLinkActive="active">Backtesting</a>
+      <a routerLink="/reports" routerLinkActive="active">Reports</a>
+    </nav>
+  </aside>
+
+  <main class="workspace">
+    <router-outlet />
+  </main>
+</div>
