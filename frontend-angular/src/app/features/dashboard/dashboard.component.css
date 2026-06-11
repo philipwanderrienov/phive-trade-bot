@@ -30,9 +30,14 @@ button {
   font-weight: 800;
 }
 
+button:disabled {
+  cursor: progress;
+  opacity: 0.64;
+}
+
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
   margin-bottom: 20px;
 }
@@ -64,10 +69,20 @@ article strong {
   overflow-x: auto;
 }
 
+.table-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #93a4b8;
+  font-size: 13px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 640px;
+  min-width: 900px;
 }
 
 th,
@@ -95,6 +110,11 @@ th {
   font-weight: 700;
 }
 
+.rationale {
+  max-width: 340px;
+  color: #cbd5e1;
+}
+
 @media (max-width: 760px) {
   .page-heading {
     align-items: flex-start;
@@ -103,5 +123,9 @@ th {
 
   .metrics-grid {
     grid-template-columns: 1fr;
+  }
+
+  .table-meta {
+    flex-direction: column;
   }
 }

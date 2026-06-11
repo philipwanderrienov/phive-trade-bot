@@ -1,6 +1,6 @@
 namespace TradingBot.Core.Models;
 
-public sealed record RecommendationDto(
+public sealed record CreateSignalRequest(
     string Symbol,
     string Market,
     string Recommendation,
@@ -10,4 +10,4 @@ public sealed record RecommendationDto(
     decimal TargetPrice,
     decimal RiskRewardRatio,
     string Rationale,
-    DateTimeOffset GeneratedAt);
+    string? Source);

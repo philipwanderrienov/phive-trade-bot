@@ -5,8 +5,14 @@ import { environment } from '../../../environments/environment';
 
 export type Recommendation = {
   symbol: string;
+  market: string;
   recommendation: string;
   confidence: number;
+  entryPrice: number;
+  stopLoss: number;
+  targetPrice: number;
+  riskRewardRatio: number;
+  rationale: string;
   generatedAt: string;
 };
 
@@ -14,6 +20,9 @@ export type ReportSummary = {
   pnl: number;
   winRate: number;
   trades: number;
+  equity: number;
+  maxDrawdown: number;
+  activeSignals: number;
   generatedAt: string;
 };
 

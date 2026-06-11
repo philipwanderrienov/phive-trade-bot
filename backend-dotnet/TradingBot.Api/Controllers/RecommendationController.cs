@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TradingBot.Core.Models;
 using TradingBot.Engine.Services;
 
 namespace TradingBot.Api.Controllers;
@@ -15,10 +16,21 @@ public class RecommendationController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get() => Ok(new[]
+    public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
-        _signalService.Synthesize("AAPL"),
-        _signalService.Synthesize("TSLA"),
-        _signalService.Synthesize("BTC-USD")
-    });
+        return Ok(await _signalService.GetRecommendationsAsync(cancellationToken));
+    }
+
+    [HttpGet("{symbol}")]
+    public async Task<IActionResult> GetBySymbol(string symbol, CancellationToken cancellationToken)
+    {
+        return Ok(await _signalService.SynthesizeAsync(symbol, cancellationToken));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateSignalRequest request, CancellationToken cancellationToken)
+    {
+        var signal = await _signalService.CreateAsync(request, cancellationToken);
+        return CreatedAtAction(nameof(GetBySymbol), new { symbol = signal.Symbol }, signal);
+    }
 }

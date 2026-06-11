@@ -31,4 +31,5 @@ coverage/
 # Local data
 *.db
 *.sqlite
+*.log
 logs/

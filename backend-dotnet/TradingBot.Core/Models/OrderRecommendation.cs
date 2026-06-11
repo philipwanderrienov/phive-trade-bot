@@ -1,9 +1,9 @@
 namespace TradingBot.Core.Models;
 
-public sealed record RecommendationDto(
+public sealed record OrderRecommendation(
     string Symbol,
     string Market,
-    string Recommendation,
+    string Action,
     decimal Confidence,
     decimal EntryPrice,
     decimal StopLoss,

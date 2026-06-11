@@ -1,27 +1,38 @@
 <section class="page-heading">
   <div>
-    <p>Live desk</p>
+    <p>Signal operations</p>
     <h1>Trading Dashboard</h1>
   </div>
-  <button type="button">Refresh Signals</button>
+  <button type="button" (click)="refresh()" [disabled]="isLoading">
+    {{ isLoading ? 'Refreshing' : 'Refresh Signals' }}
+  </button>
 </section>
 
 <section class="metrics-grid">
   <article>
     <span>Active Signals</span>
-    <strong>3</strong>
+    <strong>{{ report.activeSignals }}</strong>
   </article>
   <article>
     <span>Avg Confidence</span>
-    <strong>62%</strong>
+    <strong>{{ averageConfidence | number: '1.0-0' }}%</strong>
   </article>
   <article>
-    <span>Kafka Topic</span>
-    <strong>trading.signals</strong>
+    <span>Win Rate</span>
+    <strong>{{ report.winRate | number: '1.1-1' }}%</strong>
+  </article>
+  <article>
+    <span>Equity</span>
+    <strong>${{ report.equity | number: '1.0-0' }}</strong>
   </article>
 </section>
 
 <section class="table-wrap">
+  <div class="table-meta">
+    <span>{{ source === 'api' ? 'API connected' : 'Offline sample data' }}</span>
+    <span>Kafka topic: trading.signals</span>
+  </div>
+
   <table>
     <thead>
       <tr>
@@ -29,7 +40,9 @@
         <th>Market</th>
         <th>Recommendation</th>
         <th>Confidence</th>
-        <th>Status</th>
+        <th>Entry</th>
+        <th>Risk / Reward</th>
+        <th>Rationale</th>
       </tr>
     </thead>
     <tbody>
@@ -37,9 +50,11 @@
         <tr>
           <td>{{ signal.symbol }}</td>
           <td>{{ signal.market }}</td>
-          <td>{{ signal.recommendation }}</td>
-          <td>{{ signal.confidence }}%</td>
-          <td><span class="status">{{ signal.status }}</span></td>
+          <td><span class="status">{{ signal.recommendation }}</span></td>
+          <td>{{ signal.confidence | number: '1.0-0' }}%</td>
+          <td>{{ signal.entryPrice | number: '1.2-2' }}</td>
+          <td>{{ signal.riskRewardRatio | number: '1.2-2' }}</td>
+          <td class="rationale">{{ signal.rationale }}</td>
         </tr>
       }
     </tbody>
