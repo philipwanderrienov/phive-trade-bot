@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 using TradingBot.Core.Data;
 using TradingBot.Core.Entities;
 using TradingBot.Core.Models;
@@ -9,11 +10,16 @@ public class SignalService
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly OrderRecommender _orderRecommender;
+    private readonly IHubContext<NotificationHub> _notificationHub;
 
-    public SignalService(ApplicationDbContext dbContext, OrderRecommender orderRecommender)
+    public SignalService(
+        ApplicationDbContext dbContext,
+        OrderRecommender orderRecommender,
+        IHubContext<NotificationHub> notificationHub)
     {
         _dbContext = dbContext;
         _orderRecommender = orderRecommender;
+        _notificationHub = notificationHub;
     }
 
     public async Task<IReadOnlyList<RecommendationDto>> GetRecommendationsAsync(CancellationToken cancellationToken = default)
@@ -87,7 +93,10 @@ public class SignalService
         _dbContext.Signals.Add(signal);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return ToDto(signal);
+        var createdSignal = ToDto(signal);
+        await _notificationHub.Clients.All.SendAsync("SignalCreated", createdSignal, cancellationToken);
+
+        return createdSignal;
     }
 
     public static IReadOnlyList<MarketCandle> GetSeedCandles(string symbol)

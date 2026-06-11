@@ -1,10 +1,16 @@
 using Microsoft.EntityFrameworkCore;
+using TradingBot.Api.Jobs;
+using TradingBot.Core.Configuration;
 using TradingBot.Core.Data;
+using TradingBot.Engine.Services;
+
+DotEnvLoader.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddLogging();
+builder.Services.AddSignalR();
 builder.Services.AddDbContext<ApplicationDbContext>((options) =>
 {
     options.UseNpgsql(GetPostgresConnectionString(builder.Configuration));
@@ -26,6 +32,7 @@ builder.Services.AddScoped<TradingBot.Engine.Services.OrderRecommender>();
 builder.Services.AddScoped<TradingBot.Engine.Services.BacktestingEngine>();
 builder.Services.AddScoped<TradingBot.Engine.Services.ReportingService>();
 builder.Services.AddScoped<TradingBot.Engine.Services.SignalService>();
+builder.Services.AddHostedService<HousekeepingJobs>();
 
 var app = builder.Build();
 
@@ -44,6 +51,7 @@ app.MapGet("/health", () => Results.Ok(new
 }));
 
 app.MapControllers();
+app.MapHub<NotificationHub>("/hub/notifications");
 
 app.Run();
 

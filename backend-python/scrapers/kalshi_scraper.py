@@ -3,9 +3,12 @@
 from urllib.request import Request, urlopen
 import json
 
+from config.settings import settings
+
 
 class KalshiScraper:
-    base_url = "https://api.elections.kalshi.com/trade-api/v2"
+    def __init__(self, base_url: str | None = None) -> None:
+        self.base_url = base_url or settings.kalshi_base_url
 
     def fetch_macro_markets(self) -> list[dict]:
         request = Request(f"{self.base_url}/markets?limit=20", headers={"Accept": "application/json"})

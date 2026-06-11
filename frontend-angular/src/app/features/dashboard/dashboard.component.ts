@@ -1,7 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { catchError, forkJoin, of } from 'rxjs';
+import { Subscription, catchError, forkJoin, of } from 'rxjs';
 import { ApiService, Recommendation, ReportSummary } from '../../core/services/api.service';
+import { SignalrService } from '../../core/services/signalr.service';
 
 @Component({
   standalone: true,
@@ -10,8 +11,10 @@ import { ApiService, Recommendation, ReportSummary } from '../../core/services/a
   styleUrl: './dashboard.component.css',
   imports: [DecimalPipe]
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   private readonly api = inject(ApiService);
+  private readonly signalr = inject(SignalrService);
+  private readonly subscriptions = new Subscription();
 
   signals: Recommendation[] = fallbackSignals;
   report: ReportSummary = fallbackReport;
@@ -28,6 +31,26 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.refresh();
+    this.signalr.connect().catch(() => undefined);
+    this.subscriptions.add(
+      this.signalr.signalCreated$.subscribe((signal) => {
+        this.signals = [
+          signal,
+          ...this.signals.filter((existing) => existing.symbol !== signal.symbol)
+        ].slice(0, 25);
+        this.report = {
+          ...this.report,
+          activeSignals: this.signals.length,
+          generatedAt: new Date().toISOString()
+        };
+        this.source = 'api';
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+    this.signalr.disconnect().catch(() => undefined);
   }
 
   refresh(): void {

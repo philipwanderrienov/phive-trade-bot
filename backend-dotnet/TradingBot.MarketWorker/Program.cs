@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using TradingBot.Core.Configuration;
 using TradingBot.Core.Data;
 using TradingBot.MarketWorker.Workers;
+
+DotEnvLoader.Load();
 
 var builder = Host.CreateApplicationBuilder(args);
 

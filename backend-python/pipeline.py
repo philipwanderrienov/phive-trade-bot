@@ -13,10 +13,16 @@ from scrapers.yfinance_scraper import YFinanceScraper
 @dataclass(frozen=True)
 class TradingSignal:
     symbol: str
+    market: str
     recommendation: str
     confidence: float
     model_score: float
     macro_events: int
+    entry_price: float
+    last_close: float
+    momentum: float
+    source: str
+    rationale: str
     generated_at: str
 
     def to_dict(self) -> dict:
@@ -42,10 +48,20 @@ class SignalPipeline:
 
         return TradingSignal(
             symbol=symbol,
+            market=self._infer_market(symbol),
             recommendation=model_result["label"],
             confidence=confidence,
             model_score=model_result["score"],
             macro_events=macro_events,
+            entry_price=self._last_close(price_data["prices"]),
+            last_close=self._last_close(price_data["prices"]),
+            momentum=momentum,
+            source="python-scheduler",
+            rationale=(
+                f"Python pipeline signal with momentum {momentum}, "
+                f"{macro_events} macro events, and DeepSeek configured={ai_result['configured']}. "
+                f"{str(ai_result['summary'])[:240]}"
+            ),
             generated_at=datetime.now(timezone.utc).isoformat(),
         )
 
@@ -67,6 +83,23 @@ class SignalPipeline:
             return 0.0
 
         return round((last - first) / first, 4)
+
+    @staticmethod
+    def _last_close(prices: list[dict]) -> float:
+        if not prices:
+            return 0.0
+
+        return round(float(prices[-1]["close"]), 6)
+
+    @staticmethod
+    def _infer_market(symbol: str) -> str:
+        if symbol.endswith("-USD"):
+            return "Crypto"
+
+        if symbol.endswith("=X"):
+            return "Forex"
+
+        return "NASDAQ"
 
     @staticmethod
     def _confidence(score: float, macro_events: int, ai_configured: bool) -> float:

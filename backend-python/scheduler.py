@@ -2,13 +2,19 @@
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 
+from kafka_services.producer import SignalProducer
 from pipeline import SignalPipeline
 
 
 def collect_signals() -> None:
     pipeline = SignalPipeline()
-    signal = pipeline.build_signal("AAPL")
-    print(f"Generated signal: {signal.to_dict()}")
+    producer = SignalProducer()
+
+    for symbol in ["AAPL", "TSLA", "BTC-USD", "EURUSD=X"]:
+        signal = pipeline.build_signal(symbol)
+        payload = signal.to_dict()
+        producer.publish(payload)
+        print(f"Published signal: {payload}")
 
 
 def start_scheduler() -> None:

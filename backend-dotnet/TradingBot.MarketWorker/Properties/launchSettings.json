@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TradingBot.MarketWorker": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
