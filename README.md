@@ -7,6 +7,7 @@ Starter project untuk Phive Trade Bot berdasarkan diagram arsitektur di
 - `backend-dotnet`: gateway, shared core, worker, engine, dan Web API.
 - `frontend-angular`: dashboard Angular untuk rekomendasi, backtesting, dan laporan.
 - `docs/architecture.md`: ringkasan layer dan alur data.
+- `docs/kafka-local.md`: panduan belajar dan menjalankan integrasi Kafka lokal.
 
 ## Local Infrastructure
 
@@ -25,7 +26,10 @@ Service lokal:
 ```bash
 cp .env.example .env
 make infra-up
+make kafka-up
 make dotnet-build
+make dotnet-worker
+make python-publish-test SYMBOL=AAPL
 make python-run
 make angular-start
 ```
